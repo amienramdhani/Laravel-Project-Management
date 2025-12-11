@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('finances', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->text('address')->nullable();
-            $table->string('phone')->nullable();
+            $table->enum('type', ['income', 'expense']);
+            $table->decimal('amount', 12, 2);
+            $table->text('description');
+            $table->date('date');
+            $table->string('category')->nullable();
+            $table->nullableMorphs('financeable');
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('finances');
     }
 };
