@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         // Super Admin
         $superAdmin = User::create([
             'name' => 'Super Admin',
-            'email' => 'superadmin@example.com',
+            'email' => 'superadmin@mail.com',
             'password' => Hash::make('password'),
         ]);
         $superAdmin->assignRole('Super Admin');
@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
         // Manager
         $manager = User::create([
             'name' => 'Manager User',
-            'email' => 'manager@example.com',
+            'email' => 'manager@mail.com',
             'password' => Hash::make('password'),
         ]);
         $manager->assignRole('Manager');
@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
         // Staff
         $staff = User::create([
             'name' => 'Staff User',
-            'email' => 'staff@example.com',
+            'email' => 'staff@mail.com',
             'password' => Hash::make('password'),
         ]);
         $staff->assignRole('Staff');
@@ -41,7 +41,7 @@ class UserSeeder extends Seeder
         // Finance
         $finance = User::create([
             'name' => 'Finance User',
-            'email' => 'finance@example.com',
+            'email' => 'finance@mail.com',
             'password' => Hash::make('password'),
         ]);
         $finance->assignRole('Finance');
