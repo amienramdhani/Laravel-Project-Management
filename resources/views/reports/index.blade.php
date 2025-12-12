@@ -1,117 +1,198 @@
 @extends('layouts.app')
 
-@section('title', 'Create Project')
+@section('title', 'Financial Reports')
 
 @section('content')
-<div class="row">
+<div class="row mb-3">
     <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h4>Create New Project</h4>
+        <h2>Financial Reports</h2>
+        <p class="text-muted">View comprehensive financial reports and analytics</p>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="fas fa-filter"></i> Filter by Date Range</h5>
+    </div>
+    <div class="card-body">
+        <form action="{{ route('reports.index') }}" method="GET" class="row g-3">
+            <div class="col-md-5">
+                <label for="start_date" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="start_date" name="start_date"
+                       value="{{ $startDate }}" required>
             </div>
-            <div class="card-body">
-                <form action="{{ route('projects.store') }}" method="POST">
-                    @csrf
+            <div class="col-md-5">
+                <label for="end_date" class="form-label">End Date</label>
+                <input type="date" class="form-control" id="end_date" name="end_date"
+                       value="{{ $endDate }}" required>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">&nbsp;</label>
+                <button type="submit" class="btn btn-primary d-block w-100">
+                    <i class="fas fa-search"></i> Filter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control @error('title') is-invalid @enderror"
-                            id="title" name="title" value="{{ old('title') }}" required>
-                        @error('title')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <div class="card border-success">
+            <div class="card-body text-center">
+                <h6 class="text-muted mb-2">Total Income</h6>
+                <h2 class="text-success mb-0">
+                    <i class="fas fa-arrow-up"></i>
+                    Rp {{ number_format($income, 0, ',', '.') }}
+                </h2>
+            </div>
+        </div>
+    </div>
 
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control @error('description') is-invalid @enderror"
-                                id="description" name="description" rows="4">{{ old('description') }}</textarea>
-                        @error('description')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-danger">
+            <div class="card-body text-center">
+                <h6 class="text-muted mb-2">Total Expense</h6>
+                <h2 class="text-danger mb-0">
+                    <i class="fas fa-arrow-down"></i>
+                    Rp {{ number_format($expense, 0, ',', '.') }}
+                </h2>
+            </div>
+        </div>
+    </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="manager_id" class="form-label">Manager <span class="text-danger">*</span></label>
-                            <select class="form-select @error('manager_id') is-invalid @enderror"
-                                    id="manager_id" name="manager_id" required>
-                                <option value="">Select Manager</option>
-                                @foreach($managers as $manager)
-                                    <option value="{{ $manager->id }}" {{ old('manager_id') == $manager->id ? 'selected' : '' }}>
-                                        {{ $manager->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('manager_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-                            <select class="form-select @error('status') is-invalid @enderror"
-                                    id="status" name="status" required>
-                                <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="in_progress" {{ old('status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                                <option value="completed" {{ old('status') == 'completed' ? 'selected' : '' }}>Completed</option>
-                            </select>
-                            @error('status')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="start_date" class="form-label">Start Date</label>
-                            <input type="date" class="form-control @error('start_date') is-invalid @enderror"
-                                id="start_date" name="start_date" value="{{ old('start_date') }}">
-                            @error('start_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="end_date" class="form-label">End Date</label>
-                            <input type="date" class="form-control @error('end_date') is-invalid @enderror"
-                                id="end_date" name="end_date" value="{{ old('end_date') }}">
-                            @error('end_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Assign Staff</label>
-                        <div class="border p-3 rounded" style="max-height: 200px; overflow-y: auto;">
-                            @foreach($staff as $s)
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="staff[]"
-                                        value="{{ $s->id }}" id="staff{{ $s->id }}"
-                                        {{ in_array($s->id, old('staff', [])) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="staff{{ $s->id }}">
-                                        {{ $s->name }} ({{ $s->email }})
-                                    </label>
-                                </div>
-                            @endforeach
-                        </div>
-                        @error('staff')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ route('projects.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Back
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Create Project
-                        </button>
-                    </div>
-                </form>
+    <div class="col-md-4 mb-3">
+        <div class="card border-{{ $netProfit >= 0 ? 'primary' : 'warning' }}">
+            <div class="card-body text-center">
+                <h6 class="text-muted mb-2">Net Profit/Loss</h6>
+                <h2 class="text-{{ $netProfit >= 0 ? 'primary' : 'warning' }} mb-0">
+                    <i class="fas fa-{{ $netProfit >= 0 ? 'chart-line' : 'exclamation-triangle' }}"></i>
+                    Rp {{ number_format($netProfit, 0, ',', '.') }}
+                </h2>
             </div>
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Income by Category</h5>
+            </div>
+            <div class="card-body">
+                @if($incomeByCategory->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($incomeByCategory as $item)
+                                <tr>
+                                    <td>{{ $item->category ?? 'Uncategorized' }}</td>
+                                    <td class="text-end">Rp {{ number_format($item->total, 0, ',', '.') }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <p class="text-muted text-center mb-0">No income data in this period</p>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Expense by Category</h5>
+            </div>
+            <div class="card-body">
+                @if($expenseByCategory->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($expenseByCategory as $item)
+                                <tr>
+                                    <td>{{ $item->category ?? 'Uncategorized' }}</td>
+                                    <td class="text-end">Rp {{ number_format($item->total, 0, ',', '.') }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <p class="text-muted text-center mb-0">No expense data in this period</p>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Transaction Details</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover" id="transactions-table">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th class="text-end">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($transactions as $transaction)
+                    <tr>
+                        <td>{{ $transaction->date->format('d M Y') }}</td>
+                        <td>
+                            <span class="badge bg-{{ $transaction->type === 'income' ? 'success' : 'danger' }}">
+                                {{ ucfirst($transaction->type) }}
+                            </span>
+                        </td>
+                        <td>{{ $transaction->category ?? '-' }}</td>
+                        <td>{{ $transaction->description }}</td>
+                        <td class="text-end">
+                            <span class="text-{{ $transaction->type === 'income' ? 'success' : 'danger' }}">
+                                {{ $transaction->type === 'income' ? '+' : '-' }}
+                                Rp {{ number_format($transaction->amount, 0, ',', '.') }}
+                            </span>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No transactions in this period</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    $('#transactions-table').DataTable({
+        order: [[0, 'desc']],
+        pageLength: 25
+    });
+});
+</script>
+@endpush
